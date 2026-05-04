@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { recommendDish } from "@/lib/recommend";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   const { flavorIds, restrictionIds, excludeId } = await req.json();
 
