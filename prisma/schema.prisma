@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Flavor {
+  id     Int          @id @default(autoincrement())
+  name   String       @unique
+  dishes DishFlavor[]
+}
+
+model Restriction {
+  id     Int                    @id @default(autoincrement())
+  name   String                 @unique
+  dishes DishAvoidRestriction[]
+}
+
+model Dish {
+  id               Int                    @id @default(autoincrement())
+  name             String
+  category         String
+  isPreset         Boolean                @default(true)
+  createdBy        String?
+  createdAt        DateTime               @default(now())
+  flavors          DishFlavor[]
+  avoidRestrictions DishAvoidRestriction[]
+}
+
+model DishFlavor {
+  dishId   Int
+  flavorId Int
+  dish     Dish    @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  flavor   Flavor  @relation(fields: [flavorId], references: [id], onDelete: Cascade)
+  @@id([dishId, flavorId])
+}
+
+model DishAvoidRestriction {
+  dishId        Int
+  restrictionId Int
+  dish          Dish        @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  restriction   Restriction @relation(fields: [restrictionId], references: [id], onDelete: Cascade)
+  @@id([dishId, restrictionId])
+}
